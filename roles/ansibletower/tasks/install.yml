@@ -1,0 +1,50 @@
+---
+
+- name: "install epel-release"
+  package:
+    name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+    state: present
+
+- name: "Set installation dir fact"
+  set_fact:
+    ansible_tower_dir: "{{ default_ansible_tower_url | basename | regex_replace('.tar.gz','') }}"
+
+- name: "check if installer dir exists"
+  stat: 
+    path: "{{ ansible_tower_dir }}"
+  register: installer_dir
+
+- name: "download & unpack tower installer"
+  shell: curl {{ default_ansible_tower_url }} | tar xzvf -
+  when: not installer_dir.stat.exists
+
+- name: "adjust inventory"
+  template:
+    src: inventory.j2
+    dest: "{{ ansible_tower_dir }}/inventory"
+  register: inventory
+
+- name: "run tower installer"
+  shell: cd {{ ansible_tower_dir }} && ./setup.sh
+
+- name: get tower config info
+  shell: >
+    curl -k -u admin:{{ tower_admin_password }}
+    -H 'Accept: application/json'
+    -XGET https://localhost/api/v1/config/
+  register: config
+  changed_when: false
+
+#- debug: var=config
+
+- name: add tower license
+  shell: >
+    curl -k -u admin:{{ tower_admin_password }}
+    -H 'Content-Type: application/json'
+    -H 'Accept: application/json'
+    -d'{{ lookup('file', tower_license_file) | from_json | combine({"eula_accepted":"true"}) | to_json }}'
+    -XPOST https://localhost/api/v1/config/
+  when: (config.stdout|from_json)['license_info']|length == 0
+  register: config2
+
+#- debug: var=config2

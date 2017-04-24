@@ -1,0 +1,18 @@
+---
+
+- name: "Remove temporary demo json file"
+  file:
+    state: absent
+    path: "{{ demo_json_file }}"
+
+- name: "Remove temporary demo config.xml file"
+  file:
+    state: absent
+    path: "{{ demo_config_xml_file }}"
+
+- name: "Remove temporary demo Jenkinsfile directory"
+  file:
+    state: absent
+    path: "{{ demo_jenkinsfile_dir }}"
+
+

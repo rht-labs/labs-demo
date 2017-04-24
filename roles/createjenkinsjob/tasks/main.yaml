@@ -1,0 +1,19 @@
+---
+
+- name: "Create a new jenkins job xml definition"
+  template:
+    src: config.xml.j2
+    dest: "{{ demo_config_xml_file }}"
+
+- name: "Create a new jenkins job"
+  uri:
+    url: "http://{{ demo_projectname}}-jenkins.apps.{{ demo_hosting_env }}/createItem?name={{ demo_projectname }}-pipeline"
+    method: POST
+    user: "admin"
+    password: "demo"
+    force_basic_auth: yes
+    status_code: 200
+    body: "{{ lookup('file', demo_config_xml_file) }}"
+    headers:
+      Content-Type: "application/xml"
+

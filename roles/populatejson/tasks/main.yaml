@@ -1,0 +1,8 @@
+---
+
+- name: "Populate the json template with the correct values"
+  template:
+    src: demo_env.json.j2
+    dest: "{{ demo_json_file }}"
+
+

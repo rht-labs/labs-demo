@@ -1,0 +1,6 @@
+---
+
+# default_ansible_tower_url: http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-3.0.2.tar.gz
+default_ansible_tower_url: http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-3.0.3.tar.gz
+# default_ansible_tower_url: https://releases.ansible.com/awx/setup/ansible-tower-setup-latest.tar.gz
+
