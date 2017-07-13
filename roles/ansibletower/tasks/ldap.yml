@@ -1,0 +1,11 @@
+---
+
+- name: "Enable LDAP integration"
+  template:
+    src: ldap.py.j2
+    dest: /etc/tower/conf.d/ldap.py
+  register: ldapconf
+
+- name: "Restart tower"
+  shell: ansible-tower-service restart
+  when: ldapconf|changed

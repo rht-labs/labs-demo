@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><flow-definition>
+    <actions/>
+    <description/>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <EnvInjectJobProperty>
+            <info>
+                <propertiesContent>OPENSHIFT_API_TOKEN={{ openshift_token }}
+SKIP_TLS=true</propertiesContent>
+                <loadFilesFromMaster>false</loadFilesFromMaster>
+            </info>
+            <on>true</on>
+            <keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+            <keepBuildVariables>true</keepBuildVariables>
+            <overrideBuildParameters>false</overrideBuildParameters>
+            <contributors/>
+        </EnvInjectJobProperty>
+    </properties>
+    <triggers/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition">
+        <script>{{ demo_jenkinsfile_content }}</script>
+        <sandbox>false</sandbox>
+    </definition>
+</flow-definition>

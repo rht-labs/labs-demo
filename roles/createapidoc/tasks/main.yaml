@@ -1,0 +1,15 @@
+---
+
+- name: "Load up the API Doc"
+  uri:
+    url: "http://{{ api_server_fqdn }}:{{ api_server_port}}/engagements"
+    method: POST
+    body: "{{ lookup('file', demo_json_file) }}"
+    status_code: 201
+    body_format: json
+  register: returnvalue
+
+- name: "Set URL for demo engagement"
+  set_fact:
+    engagement_url: "{{ returnvalue.location }}"
+

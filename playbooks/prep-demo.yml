@@ -1,0 +1,52 @@
+---
+- name: "Prepare for demo execution"
+  hosts: localhost
+  vars:
+  # - demo_hosting_api_fqdn: - e.g.: "master1.demo.example.com:8443"
+  # - demo_hosting_env:      - e.g.: "demo.example.com" 
+  # - demo_projectname:      - e.g.: "companyname"  
+  # - demo_scm_url:          - e.g.: "https://github.com/rht-labs/infographic"
+  # - demo_username:         - e.g.: "username"
+  # - demo_password:         - e.g.: "password"
+  # - demo_token:            - e.g.: "OpenShift token"
+  - openshift_login_url: "{{ demo_hosting_api_fqdn }}"
+  - openshift_user: "{{ demo_username }}"
+  - openshift_token: "{{ demo_token }}"
+  roles:
+  - role: common
+  - role: ../roles/openshift-login
+
+- name: "Write the demo json"
+  hosts: localhost
+  roles:
+  - role: populatejson 
+
+- name: "Load Up the API doc"
+  hosts: localhost
+  vars: 
+  - api_server_fqdn: "labs-api.{{ demo_hosting_env }}"
+  - api_server_port: "80"
+  roles:
+  - role: createapidoc
+
+- name: "Run ansible-stacks"
+  vars:
+    openshift_user: "{{ demo_username }}"
+    openshift_token: "{{ demo_token }}"
+    api_document_file: "{{ demo_json_file }}"
+  include: ../playbooks/load_infra_local.yml 
+
+- name: "Get Jenkinsfile for demo and populate Jenkins"
+  hosts: localhost
+  vars:
+    openshift_token: "{{ demo_token }}"
+  roles:
+  - role: jenkinsfile
+  - role: createjenkinsjob
+  # - role: seedjenkins
+
+- name: "Demo prep clean-up"
+  hosts: localhost
+  roles:
+  - role: cleanup
+

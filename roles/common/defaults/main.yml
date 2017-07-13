@@ -1,0 +1,6 @@
+---
+
+openshift:
+  common:
+    client_binary: "oc"
+    admin_binary: "oc adm"

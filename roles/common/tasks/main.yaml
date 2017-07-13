@@ -1,0 +1,42 @@
+---
+
+# Note: with Ansible 2.3 there's a new "tempfile" module that can be used
+#       - since we're not quite on 2.3, yet, these commands are used for now
+
+
+- name: "Set demo facts"
+  set_fact:
+    demo_hosting_api_fqdn: "{{ demo_hosting_api_fqdn }}"
+    demo_hosting_env: "{{ demo_hosting_env }}"
+    demo_projectname: "{{ demo_projectname }}"
+    demo_scm_url: "{{ demo_scm_url }}"
+    demo_username: "{{ demo_username }}" 
+    demo_token: "{{ demo_token }}" 
+
+- name: "Use a unique temporary file to store the demo json"
+  command: mktemp
+  register: tmp_output
+
+- name: "Store the temp file name for the demo json"
+  set_fact:
+    demo_json_file: "{{ tmp_output.stdout }}"
+
+- name: "Use a unique temporary file to store the config.xml for the new jenkins job"
+  command: mktemp
+  register: tmp_output
+
+- name: "Store the temp file name for the demo json"
+  set_fact:
+    demo_config_xml_file: "{{ tmp_output.stdout }}"
+
+- name: "Use a unique temporary file to store the demo Jenkinsfile"
+  command: mktemp -d
+  register: tmp_output
+
+- name: "Store the temp file name for the Jenkinsfile"
+  set_fact:
+    demo_jenkinsfile_dir: "{{ tmp_output.stdout }}/workspace"
+
+- name: "Create a workspace directory to align with Jenkins directory structure"
+  command: "mkdir {{ demo_jenkinsfile_dir }}"
+

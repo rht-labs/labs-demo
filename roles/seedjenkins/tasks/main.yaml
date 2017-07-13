@@ -1,0 +1,27 @@
+---
+
+- name: "Determine the name of the Jenkins pod"
+  shell: >
+    {{ openshift.common.client_binary }} get pods --no-headers=true --show-all=false -n {{ demo_projectname }}-pipeline | egrep -v "build|deploy" | grep 'Running' | awk '{print $1}'
+  register: podlist
+  until: podlist.rc == 0
+  retries: 30
+  delay: 2
+
+- name: "Upload the Jenkinsfile to the Jenkins pod"
+  command: >
+    {{ openshift.common.client_binary }} rsync -n {{ demo_projectname }}-pipeline {{ demo_jenkinsfile_dir }} {{ podlist.stdout }}:/var/lib/jenkins/jobs/release-pipeline-seed-job-scm-local
+
+- name: "Run Jenkins seed job"
+  command: >
+    curl -X POST http://admin:demo@jenkins-{{ demo_projectname }}-pipeline.apps.{{ demo_hosting_env }}/job/release-pipeline-seed-job-scm-local/build --data-urlencode json='{"parameter": [{"name":"application_name", "value":"{{ demo_projectname }}"}, {"name":"openshift_api_token", "value":"{{ openshift_token }}"}]}'
+ 
+#- name: "Run Jenkins seed job"
+#  uri:
+#    url: "http://jenkins-{{ demo_projectname }}-pipeline.apps.{{ demo_hosting_env }}/job/release-pipeline-seed-job-scm-local/buildWithParameters?{{ post_values | urlencode() }}"
+#    method: POST
+#    user: "admin"
+#    password: "demo"
+#    force_basic_auth: yes
+#    status_code: 201 
+
