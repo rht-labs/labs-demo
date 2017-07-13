@@ -14,7 +14,7 @@
   - openshift_token: "{{ demo_token }}"
   roles:
   - role: common
-  - role: openshift-login
+  - role: ansible-stacks/roles/openshift-login
 
 - name: "Write the demo json"
   hosts: localhost
@@ -34,7 +34,7 @@
     openshift_user: "{{ demo_username }}"
     openshift_token: "{{ demo_token }}"
     api_document_file: "{{ demo_json_file }}"
-  include: ../playbooks/load_infra_local.yml 
+  include: ansible-stacks/playbooks/load_infra_local.yml 
 
 - name: "Get Jenkinsfile for demo and populate Jenkins"
   hosts: localhost
