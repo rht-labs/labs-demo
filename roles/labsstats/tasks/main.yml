@@ -1,13 +1,41 @@
 ---
 - name: 'Update demo runs count'
   mongodb_write:
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"
     database: labs-stats
     db_object: 'GlobalStats'
-    action: 'insert'
+    action: 'update'
+    filter:
+      name: 'runs'
     data:
-      name: 'test'
-      count: 0
+      $inc:
+        count: 1
 
-# - name: 'Update number of runs per user'
+- name: 'Update number of runs per user'
+  mongodb_write:
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"
+    database: labs-stats
+    db_object: 'UserRuns'
+    action: 'upsert'
+    filter:
+      username: "{{ labs_username }}"
+    data:
+      $set:
+        username: "{{ labs_username }}"
+      $inc:
+        count: 1
 
-# - name: 'Update unique user run count'
+- name: 'Update unique user run count'
+  mongodb_write:
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"
+    database: labs-stats
+    db_object: 'GlobalStats'
+    action: 'update'
+    filter:
+      name: 'unique_users'
+    data:
+      $inc:
+        count: 1

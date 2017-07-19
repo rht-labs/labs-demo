@@ -90,13 +90,14 @@ def insert(module, client, db_name, db_object, data):
     db[db_object].insert(data)
 
 
-def update_one(module, client, db_name, db_object, data):
+def update_one(module, client, db_name, db_object, row_filter, data):
     db = client[db_name]
-    db[db_object].update_one(data, upsert=False)
+    db[db_object].update_one(row_filter, data, upsert=False)
 
 
-def upsert(module, client, db_name, db_object, data):
-    pass
+def upsert(module, client, db_name, db_object, row_filter, data):
+    db = client[db_name]
+    db[db_object].update_one(row_filter, data, upsert=True)
 
 # =========================================
 # Module execution.
@@ -114,7 +115,8 @@ def main():
             database=dict(required=True, aliases=['db']),
             db_object=dict(required=True),
             action=dict(required=True, choices=['insert', 'update', 'upsert']),
-            data=dict(required=True),
+            data=dict(default={}),
+            filter=dict(default={}),
             )
         )
 
@@ -130,6 +132,7 @@ def main():
     db_name = module.params['database']
     db_object = module.params['db_object']
     action = module.params['action']
+    row_filter = module.params['filter']
     data = ast.literal_eval(module.params['data'])
 
     try:
@@ -166,13 +169,13 @@ def main():
 
     elif action == 'update':
         try:
-            update_one(module, client, db_name, db_object, data)
+            update_one(module, client, db_name, db_object, row_filter, data)
         except Exception:
             e = get_exception()
             module.fail_json(msg='Unable to update to database: %s' % str(e))
     elif action == 'upsert':
         try:
-            upsert(module, client, db_name, db_object, data)
+            upsert(module, client, db_name, db_object, row_filter, data)
         except Exception:
             e = get_exception()
             module.fail_json(msg='Unable to upsert to database: %s' % str(e))
