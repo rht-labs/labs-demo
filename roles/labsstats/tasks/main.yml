@@ -1,5 +1,13 @@
+---
 - name: 'Update demo runs count'
+  mongodb_write:
+    database: labs-stats
+    db_object: 'GlobalStats'
+    action: 'insert'
+    data:
+      name: 'test'
+      count: 0
 
-- name: 'Update number of runs per user'
+# - name: 'Update number of runs per user'
 
-- name: 'Update unique user run count'
+# - name: 'Update unique user run count'

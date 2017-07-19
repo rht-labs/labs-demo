@@ -1,0 +1,5 @@
+---
+- name: "Update stats"
+  hosts: dbserver
+  roles:
+  - role: labsstats
