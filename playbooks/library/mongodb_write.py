@@ -87,17 +87,17 @@ def load_mongocnf():
 
 def insert(module, client, db_name, db_object, data):
     db = client[db_name]
-    db[db_object].insert(data)
+    return db[db_object].insert(data)
 
 
 def update_one(module, client, db_name, db_object, row_filter, data):
     db = client[db_name]
-    db[db_object].update_one(row_filter, data, upsert=False)
+    return db[db_object].update_one(row_filter, data, upsert=False)
 
 
 def upsert(module, client, db_name, db_object, row_filter, data):
     db = client[db_name]
-    db[db_object].update_one(row_filter, data, upsert=True)
+    return db[db_object].update_one(row_filter, data, upsert=True)
 
 # =========================================
 # Module execution.
@@ -132,8 +132,11 @@ def main():
     db_name = module.params['database']
     db_object = module.params['db_object']
     action = module.params['action']
-    row_filter = module.params['filter']
+    # row_filter = module.params['filter']
+
     data = ast.literal_eval(module.params['data'])
+    row_filter = ast.literal_eval(module.params['filter'])
+    u_content = None
 
     try:
         connection_params = {
@@ -162,25 +165,26 @@ def main():
         module.fail_json(msg='unable to connect to database: %s' % str(e))
     if action == 'insert':
         try:
-            insert(module, client, db_name, db_object, data)
+            raw_content = insert(module, client, db_name, db_object, data)
         except Exception:
             e = get_exception()
             module.fail_json(msg='Unable to insert to database: %s' % str(e))
 
     elif action == 'update':
         try:
-            update_one(module, client, db_name, db_object, row_filter, data)
+            raw_content = update_one(module, client, db_name, db_object, row_filter, data)
         except Exception:
             e = get_exception()
             module.fail_json(msg='Unable to update to database: %s' % str(e))
     elif action == 'upsert':
         try:
-            upsert(module, client, db_name, db_object, row_filter, data)
+            raw_content = upsert(module, client, db_name, db_object, row_filter, data)
+            u_content = raw_content.upserted_id
         except Exception:
             e = get_exception()
             module.fail_json(msg='Unable to upsert to database: %s' % str(e))
 
-    module.exit_json(changed=True)
+    module.exit_json(changed=True, content=str(u_content))
 
 if __name__ == '__main__':
     main()

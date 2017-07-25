@@ -26,6 +26,7 @@
         username: "{{ labs_username }}"
       $inc:
         count: 1
+  register: upsert_result
 
 - name: 'Update unique user run count'
   mongodb_write:
@@ -39,3 +40,4 @@
     data:
       $inc:
         count: 1
+  when: upsert_result != "None"
