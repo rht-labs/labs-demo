@@ -11,6 +11,56 @@ short_description: Writes to a MongoDB database.
 description:
     - Writes to a MongoDB database.
 options:
+    login_user:
+        description:
+            - The username used to authenticate with
+        required: false
+        default: null
+    login_password:
+        description:
+            - The password used to authenticate with
+        required: false
+        default: null
+    login_host:
+        login_host:
+        description:
+            - The host running the database
+        required: false
+        default: localhost
+    login_port:
+        login_port:
+        description:
+            - The port to connect to
+        required: false
+        default: 27017
+    login_database:
+        description:
+            - The database where login credentials are stored
+        required: false
+        default: null
+    database:
+        description:
+            - The name of the database to write to
+        required: true
+    db_object:
+        description:
+            - The name of the mongodb Object in the database you want to write to
+        required: true
+    action:
+        description:
+            - The name of the write action
+        choices: ["insert", "update", "upsert"]
+        requiredL true
+    data:
+        description:
+            - A dictionary of data you want to write to the database
+        required: false
+        default: empty dict
+    filter:
+        description:
+            - A dictionary of writing filters
+        required: false
+        default: empty dict
 '''
 
 import sys
@@ -132,7 +182,6 @@ def main():
     db_name = module.params['database']
     db_object = module.params['db_object']
     action = module.params['action']
-    # row_filter = module.params['filter']
 
     data = ast.literal_eval(module.params['data'])
     row_filter = ast.literal_eval(module.params['filter'])
