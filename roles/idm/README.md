@@ -1,8 +1,11 @@
-# DEPRECATED WARNING - CREATE IDENTITIES IN AN EXISTING IDM 
+# DEPRECATED WARNING 
 
 ## THIS ROLE HAS MOVED ... 
 You can find the new hojme for this role [here](https://github.com/redhat-cop/infra-ansible)
 
+
+# ==== ORIGINAL README CONTENT BELOW =====
+# CREATE IDENTITIES IN AN EXISTING IDM
 An ansible role that will consume a google sheet and insert that data into and existing IDM (IPA). the format of the sheet should include a header row
 
 ```
