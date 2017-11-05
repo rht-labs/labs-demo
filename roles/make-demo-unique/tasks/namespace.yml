@@ -1,0 +1,31 @@
+---
+
+- set_fact:
+    replacement_values:
+    - match: 'NAMESPACE_DISPLAY_NAME'
+      value: " ({{ demo_projectname }})"
+    - match: 'NAMESPACE_DESCRIPTION'
+      value: " ({{ demo_projectname }})"
+
+- name: "Append the demo projectname in the params files"
+  replace:
+    path: "{{ content.params }}"
+    regexp: '^(NAMESPACE.*)=(.*)$'
+    replace: '\1=\2-{{ demo_projectname }}'
+  with_items:
+  - "{{ item.content }}"
+  loop_control:
+    loop_var: content 
+
+- name: "Change the '-<name>' value to ' (<name>)' for DISPLAY NAME"
+  replace:
+    path: "{{ content.0.params }}"
+    regexp: '^({{ content.1.match }})=(.*)(-{{ demo_projectname }})$'
+    replace: '\1=\2{{ content.1.value }}'
+  with_nested:
+  - "{{ item.content }}"
+  - "{{ replacement_values }}"
+  loop_control:
+    loop_var: content 
+
+

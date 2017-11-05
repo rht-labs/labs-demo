@@ -15,6 +15,7 @@
   - openshift_token: "{{ demo_token }}"
   roles:
   - role: common
+  - role: ../roles/casl-ansible/roles/openshift-defaults
   - role: ../roles/casl-ansible/roles/openshift-login
 
 - name: "Prepare the SCM for use with this demo env"
@@ -27,6 +28,11 @@
   hosts: seed-hosts
   roles:
   - role: append-scm-inventory
+
+- name: "Use the Project Name to make the demo unique"
+  hosts: seed-hosts
+  roles:
+  - role: make-demo-unique
 
 - name: "Seed the cluster"
   vars:

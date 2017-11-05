@@ -1,0 +1,10 @@
+---
+
+- name: "Update the NAMESPACE* entries to be unique"
+  include: namespace.yml
+  with_items:
+  - "{{ openshift_cluster_content }}"
+
+- name: "Update 'namespace: ' entries with a custom filter"
+  set_fact:
+    openshift_cluster_content: "{{ openshift_cluster_content | update_namespace('-' + demo_projectname) }}"
