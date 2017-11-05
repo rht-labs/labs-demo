@@ -9,7 +9,7 @@ def update_namespace(object_list, append_value):
   return object_list
 
 class FilterModule(object):
-    def filters(self):
-        return {
-            'update_namespace': update_namespace
-        }
+  def filters(self):
+    return {
+      'update_namespace': update_namespace
+    }
