@@ -1,0 +1,6 @@
+---
+
+- name: "Checkout the demo git source"
+  git: 
+    repo: "{{ demo_scm_url }}" 
+    dest: "{{ demo_src_tree }}"

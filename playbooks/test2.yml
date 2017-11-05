@@ -1,0 +1,10 @@
+---
+- name: "Demo prep clean-up"
+  hosts: localhost
+  vars:
+    demo_scm_url: "https://github.com/rht-labs/infographic"
+    demo_src_tree: "/tmp/test2"    
+    demo_src_inventory: "/tmp/test2/inventory/"    
+  roles:
+  - role: scm-tweaks
+

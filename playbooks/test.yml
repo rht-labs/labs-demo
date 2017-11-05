@@ -1,0 +1,9 @@
+---
+- name: "Demo prep clean-up"
+  hosts: localhost
+  vars:
+    demo_scm_url: "https://github.com/rht-labs/infographic"
+    demo_src_tree: "/tmp/test2"    
+  roles:
+  - role: scm-clone
+
