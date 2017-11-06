@@ -1,0 +1,14 @@
+---
+
+- name: "Updating 'inventory_dir' to reflect the new location"
+  replace:
+    path: "{{ item.src }}"
+    regexp: '\{\{\s*inventory_dir\s*\}\}'
+    replace: "{{ demo_src_inventory }}" 
+  with_filetree:
+  - "{{ demo_src_inventory }}"
+  when:
+  - item.state == 'file'
+  - item.src is defined
+
+

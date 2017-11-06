@@ -1,6 +1,7 @@
 ---
+
 - name: "Prepare for demo execution"
-  hosts: localhost
+  hosts: seed-hosts
   vars:
   # - demo_hosting_api_fqdn: - e.g.: "master1.demo.example.com:8443"
   # - demo_hosting_env:      - e.g.: "demo.example.com" 
@@ -14,39 +15,33 @@
   - openshift_token: "{{ demo_token }}"
   roles:
   - role: common
-  - role: ../roles/ansible-stacks/roles/openshift-login
+  - role: ../roles/casl-ansible/roles/openshift-defaults
+  - role: ../roles/casl-ansible/roles/openshift-login
 
-- name: "Write the demo json"
-  hosts: localhost
+- name: "Prepare the SCM for use with this demo env"
+  hosts: seed-hosts
   roles:
-  - role: populatejson 
+  - role: scm-clone
+  - role: scm-tweaks 
 
-- name: "Load Up the API doc"
-  hosts: localhost
-  vars: 
-  - api_server_fqdn: "labs-api.{{ demo_hosting_env }}"
-  - api_server_port: "80"
+- name: "Append the SCM inventory to apply the changes"
+  hosts: seed-hosts
   roles:
-  - role: createapidoc
+  - role: append-scm-inventory
 
-- name: "Run ansible-stacks"
+- name: "Use the Project Name to make the demo unique"
+  hosts: seed-hosts
+  roles:
+  - role: make-demo-unique
+
+- name: "Seed the cluster"
   vars:
     openshift_user: "{{ demo_username }}"
     openshift_token: "{{ demo_token }}"
-    api_document_file: "{{ demo_json_file }}"
-  include: ../roles/ansible-stacks/playbooks/load_infra_local.yml 
-
-- name: "Get Jenkinsfile for demo and populate Jenkins"
-  hosts: localhost
-  vars:
-    openshift_token: "{{ demo_token }}"
-  roles:
-  - role: jenkinsfile
-  - role: createjenkinsjob
-  # - role: seedjenkins
+  include: ../roles/casl-ansible/playbooks/openshift-cluster-seed.yml
 
 - name: "Demo prep clean-up"
-  hosts: localhost
+  hosts: seed-hosts
   roles:
   - role: cleanup
 

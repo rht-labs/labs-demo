@@ -1,0 +1,12 @@
+---
+
+- name: "Append the inventory from the GIT source tree (.yml/.yaml files)"
+  include_vars:
+    file: "{{ item.src }}"
+  with_filetree:
+  - "{{ demo_src_inventory }}"
+  when: 
+  - item.state == 'file'
+  - item.src is defined
+  - (item.src.find('.yml') == (item.src|length - 4) or item.src.find('.yaml') == (item.src|length - 5))
+

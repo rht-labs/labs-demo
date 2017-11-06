@@ -1,0 +1,6 @@
+*.retry
+*.swp
+*.pyc
+roles/infra-ansible
+roles/casl-ansible
+
