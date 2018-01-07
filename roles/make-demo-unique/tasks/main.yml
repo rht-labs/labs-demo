@@ -6,7 +6,7 @@
     unique_name: "({{ demo_projectname }})"
 
 - name: "Update the NAMESPACE* entries to be unique"
-  include: namespace.yml
+  include_tasks: namespace.yml
   with_items:
   - "{{ openshift_cluster_content }}"
 
