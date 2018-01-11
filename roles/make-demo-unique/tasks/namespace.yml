@@ -6,6 +6,11 @@
       value: "{{ unique_name }}"
     - match: 'NAMESPACE_DESCRIPTION'
       value: "{{ unique_name }}"
+    scm_replacement_values:
+    - match: 'SCM_URL'
+      value: "{{ scm_url }}"
+    - match: 'SCM_REF'
+      value: "{{ scm_ref }}"
 
 - name: "Append the demo projectname in the params files"
   replace:
@@ -28,4 +33,16 @@
   loop_control:
     loop_var: content 
 
+- name: "Update SCM related config to ensure it's pointing to the correct source repo, etc."
+  replace:
+    path: "{{ content.0.params }}"
+    regexp: '^({{ content.1.match }})=.*$'
+    replace: '\1={{ content.1.value }}'
+  with_nested:
+  - "{{ item.content }}"
+  - "{{ scm_replacement_values }}"
+  when:
+  - content.1.value|trim != ''
+  loop_control:
+    loop_var: content
 
