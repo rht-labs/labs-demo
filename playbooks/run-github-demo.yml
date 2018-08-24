@@ -1,0 +1,11 @@
+---
+
+- name: "Prepare the SCM for use with this demo env"
+  hosts: seed-hosts
+  tasks:
+  - set_fact:
+      demo_projectname: "{{ pusher.name }}"
+      demo_scm_url: "{{ repository.url }}#{{ ref | regex_replace('^refs\\/.+\\/(.*)$', '\\1') }}"
+   
+
+- import_playbook: run-demo.yml

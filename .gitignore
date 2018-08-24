@@ -1,6 +1,6 @@
 *.retry
 *.swp
 *.pyc
-roles/infra-ansible
 roles/casl-ansible
+roles/openshift-applier
 
