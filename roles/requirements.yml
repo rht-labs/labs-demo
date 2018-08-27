@@ -2,3 +2,7 @@
 # From: 'openshift-applier'
 - src: https://github.com/redhat-cop/openshift-applier
   version: v2.0.0
+
+# From: 'casl-ansible'
+- src: https://github.com/redhat-cop/casl-ansible
+  version: v3.9.2
