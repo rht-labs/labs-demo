@@ -15,7 +15,7 @@
 - name: "Append the demo projectname in the params files"
   replace:
     path: "{{ content.params }}"
-    regexp: '^(NAMESPACE.*)=(.*)$'
+    regexp: '^(NAMESPACE.*|TARGET_NAMESPACE.*)=(.*)$'
     replace: '\1=\2{{ unique_id }}'
   with_items:
   - "{{ item.content }}"
